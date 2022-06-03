@@ -1,3 +1,4 @@
+from fbhq.custom import custom
 from fbhq.list_localadmin import list_localadmin
 
 from py2neo import Graph
@@ -20,6 +21,13 @@ def main():
 		help="Domain user in form of waza.local/Administrator"
 	)
 
+	custom_parser = subparsers.add_parser("custom", help="Custom bloodhound query, with result in terminal")
+	custom_parser.add_argument(
+		'query',
+		action='store',
+		help="Custom bloodhound query"
+	)
+
 	args = parser.parse_args()
 	try:
 		g = Graph(args.bolt, auth=(args.username, args.password))
@@ -29,6 +37,8 @@ def main():
 
 	if args.action == "list-localadmin":
 		list_localadmin(g, args)
+	if args.action == "custom":
+		custom(g, args)
 	else:
 		raise Exception("Action not implemented: %s" % args.action)
 
